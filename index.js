@@ -68,8 +68,7 @@ let and = (cn1, cn2) => {
 	bin_to_num.remap([0, cn1.item]).call();
 };
 
-let left_shift1 = (cn1, cn2) => {
-	num_to_bin1.remap([0, cn1.item]).call();
+let left_shift1 = trigger_function(() => {
 	bin1.forEach((x, i) => {
 		if (i == 15) {
 			x.set(0);
@@ -77,12 +76,46 @@ let left_shift1 = (cn1, cn2) => {
 		}
 		x.set(bin1[i + 1]);
 	});
+});
+
+let right_shift1 = trigger_function(() => {
+	for (let i = bin1.length - 1; i >= 0; i--) {
+		let x = bin1[i];
+		if (i == 0) {
+			x.set(0);
+			break;
+		}
+		x.set(bin1[i - 1]);
+	};
+});
+
+let left_shift = (cn1, cn2) => {
+	num_to_bin1.remap([0, cn1.item]).call();
+	cn2.to_const(range(0, 16), (n) => {
+		for (let i = 0; i < n; i++) {
+			left_shift1.call();
+		}
+	});
+	bin_to_num.remap([0, cn1.item]).call();
+};
+
+let right_shift = (cn1, cn2) => {
+	num_to_bin1.remap([0, cn1.item]).call();
+	cn2.to_const(range(0, 16), (n) => {
+		for (let i = 0; i < n; i++) {
+			right_shift1.call();
+		}
+	});
 	bin_to_num.remap([0, cn1.item]).call();
 };
 
 // todo: create right shift that isnt buggy + implement NOT and OR
 return {
+	num_to_bin1,
+	num_to_bin2,
+	bin_to_num,
 	xor, 
 	and,
-	left_shift1
+	left_shift,
+	right_shift
 }
